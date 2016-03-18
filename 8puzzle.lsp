@@ -18,7 +18,7 @@
 
     ; check for list
     ; store the digits
-    ((= num 9) 
+    ((and (= 0 (mod (sqrt num) 1)) (> num 4)) 
       ; pushes input to list as integer
       (dolist (x L) (push (parse-integer x) puzzle))
     )
@@ -48,23 +48,32 @@
 (defun userInput ()
 
   ; print prompt to have user enter digits
-  (princ "Enter digits 0 - 8, seperated by white space, in any order (no repeats): " )
-
-  ; read in 9 values
-  (setf i 0)
-  (dotimes (i 9 t)
-    (setf input (read))
-    (if (numberp input) 
-      ; if true do this
-      (push input puzzle) 
-      ; else do this 
-      ; progn allows more than one s-expression to berun
-      (progn (format t "Invalid input, please try again.~%") (userInput))
+  (princ "Enter puzzle in row-major order with each number seperated by white space (press enter when complete): " )
+  ; read in everyting that was entered by the user
+  (let ((vals) (num nil) (numList nil) (input (read-line)))
+    (loop for x across input do (push (string x) vals))
+    (dolist (y vals)
+      (if (not (string= #\space y))
+        (setf num (concatenate 'string y num))
+        (progn (push num numList) (setf num nil)) 
       )
-  ) 
+    )
+    ; push final number to the list
+    (push num numList)
 
-  ; still need check for valid numbers
+    ; checks for correct number of inputs
+    (if (not (and (= 0 (mod (sqrt (length numList)) 1)) (> (length numList) 4)))
+      (progn (format t "Invalid number of puzzle elements. Please try again~%") (userInput))   
+    )
+
+    (setf puzzle (reverse numList))
+  )
+
 )
+
+; check puzzle function to check for correct values ie range and integers
+; start working on A* alogorithm to solve puzzle
+
 
 ; call the function to read the arguments
 (readArgs *args*)
