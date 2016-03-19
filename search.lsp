@@ -24,6 +24,8 @@ Modifications:
 |#
 
 ;--------------------------------------------------------------------------
+; load file
+(load 'p_child.lsp)
 
 ; global variable for goal state of the puzzle
 (defvar *goalState*)
@@ -44,6 +46,8 @@ Modifications:
 
 ; Given a start state and a search type (BFS or DFS), return a path from the start to the goal.
 (defun search_bfs_dfs (start type)
+    ; (generateGoalState (1- (length start)))
+
     (do*                                                    ; note use of sequential DO*
         (                                                   ; initialize local loop vars
             (curNode (make-node :state start :parent nil))  ; current node: (start nil)
@@ -63,7 +67,7 @@ Modifications:
         (setf CLOSED (cons curNode CLOSED))
 
         ; add successors of current node to OPEN
-        (dolist (child (generate-successors (node-state curNode)))
+        (dolist (child (puzzle_children (node-state curNode)))
 
             ; for each child node
             (setf child (make-node :state child :parent (node-state curNode)))
@@ -128,5 +132,9 @@ Modifications:
         )
     )
 
-    (write *goalState*)
+    ; (write *goalState*)
+)
+
+(defun goal-state? (state)
+    (equal state *goalState*)
 )
