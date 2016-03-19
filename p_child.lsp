@@ -6,13 +6,13 @@
 |#
 
 (defun puzzle_children (puzzle)
-    (let
+    (let*
         (
             ; "Find the length of the puzzle"
             (width (sqrt (list-length puzzle)))
             ;"Let's find the 0 position"
             (pos (position 0 puzzle))
-            (localPos (mod (1+ pos) width)) 
+            (localPos (mod pos width)) 
             ; "Define a container to return"
             (movUp (copy-list puzzle))
             (movDn (copy-list puzzle))
@@ -22,28 +22,27 @@
         )
 
         ; "Let's test moves up and down"
-        (when (> -1 (- pos width) )
+        (when (< -1 (- pos width) )
             (rotatef (nth pos movUp) (nth (- pos width) movUp))
             (push movUp children)
         )
 
-        (when (< (width * width) (+ pos width))
-            (rotatef (nth movDn pos movDn) (nth (+ pos width) movDn))
+        (when (> (* width width) (+ pos width))
+            (rotatef (nth  pos movDn) (nth (+ pos width) movDn))
             (push movDn children)
         )
 
         ; "Let's test moves left and right"
-        (when (> -1 (- localPos width))
+        (when (< -1 (1- localPos))
             (rotatef (nth pos movLf) (nth (1- pos) movLf))
             (push movLf children)
         )
 
-        (when (< width (+ localPos width))
+        (when (> width (1+ localPos))
             (rotatef (nth pos movRt) (nth (1+ pos) movRt))
             (push movRt children)
         )
 
-    
-    )
     children
+    )
 )
