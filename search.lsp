@@ -25,6 +25,9 @@ Modifications:
 
 ;--------------------------------------------------------------------------
 
+; global variable for goal state of the puzzle
+(defvar *goalState*)
+
 ; Node structure: stores state and parent.
 (defstruct node state parent)
 
@@ -109,4 +112,21 @@ Modifications:
     (dolist (node node-list)
         (when (equal state (node-state node)) (return node))
     )
+)
+
+; generates the goal state for the given puzzle size
+(defun generateGoalState (puzSize)
+    (setf *goalState* nil)
+    (if (= puzSize 8)
+        ; goal state for 8-puzzle
+        (setq *goalState* '(1 2 3 8 0 4 7 6 5))
+        (progn
+            (push 0 *goalState*) 
+            (loop for i from puzSize downto 1
+                do (push i *goalState*)
+            )
+        )
+    )
+
+    (write *goalState*)
 )

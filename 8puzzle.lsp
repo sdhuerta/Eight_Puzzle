@@ -1,4 +1,18 @@
-; main file for 8puzzle program
+#| 
+  8puzzle.lsp
+
+  This gets the user input from either the command line or a call to the
+  8puzzle function in lisp. It accepts input as a file or as user entered
+  numbers. The numbers are put into a global list and checked to see if the 
+  correct number of numbers was inputed and if they are valid numbers. 
+
+  Class: CSC 447 - Artificial Intelligence
+  Authors: 
+  Due Date: March 27, 2016
+
+|#
+
+(load 'search.lsp)
 
 ; global variable for the puzzle
 (setf *puzzle* nil)
@@ -12,7 +26,7 @@
       ; pushes input to list as integer
       (dolist (x L) (push x *puzzle*))
       ; default/error checking
-      (t (format t"Invalid number of arguments. Exiting Program~%"))
+      (format t"Invalid number of arguments. Exiting Program~%")
   )
     ; reverse list so they are in the order that they were read in as
     (setf *puzzle* (reverse *puzzle*))
@@ -36,7 +50,6 @@
 
 ; reads in the list entered by the user
 (defun userInput ()
-
   ; print prompt to have user enter digits
   (princ "Enter puzzle in row-major order with each number seperated by white space (press enter when complete): " )
   ; read in everyting that was entered by the user
