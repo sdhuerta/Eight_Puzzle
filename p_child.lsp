@@ -110,7 +110,7 @@
         (dolist (child (puzzle_children (node-state curNode)))
 
             ; for each child node
-            (setf child (make-node :state child :parent (node-state curNode)))
+            (setf child (make-node :state child :parent (node-state curNode) :score 0))
 
             ; if the node is not on OPEN or CLOSED
             (if (and (not (member child OPEN   :test #'equal-states))
@@ -143,8 +143,8 @@
     (let ((score 0 ))
         (dotimes (i (list-length puzzle))
             (cond (
-                (equal (nth i puzzle) (nth i *goalState*)) 
-                    (1+ score))
+                (not(eq (nth i puzzle) (nth i *goalState*))) 
+                    (incf score))
                 (t 0)
             )
         )
@@ -155,19 +155,28 @@
 
 ; Calculate the manhattan distance of the goal state
 (defun manhattan (puzzle)
-    (let  (
-        (width (sqrt (list-length puzzle))))
-    (dolist (element puzzle)
-        (let* 
-            (
-                (pos_goal (position element *goalState*))
-                (pos_elem (position element puzzle))
+    (let  
+        (
+            (width (sqrt (list-length puzzle)))
+            (total_dis 0)
+
+        )
+        (dolist (element puzzle)
+            (let*
+                (
+                    (pos_goal (position element *goalState*))
+                    (pos_elem (position element puzzle))
+
+                    (dis (+ (abs (- (floor (/ pos_elem width)) 
+                        (floor (/ pos_goal width))))
+                        (abs (- (mod pos_elem width) (mod pos_goal width))))
+                    )
+                )
+            
+                (setf total_dis (+ total_dis dis))
             )
 
-            (+ (abs (- (floor (/ pos_elem width)) 
-                (floor (/ pos_goal width))))
-                abs (- (mod pos_elem width) (mod pos_goal width)))
         )
-    )
+        total_dis   
     )
 )
