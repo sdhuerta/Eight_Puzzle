@@ -31,7 +31,7 @@ Modifications:
 (defvar *goalState*)
 
 ; Node structure: stores state and parent.
-(defstruct node state parent)
+(defstruct node state parent score)
 
 ; Test if two nodes have the same state.
 (defun equal-states (n1 n2) (equal (node-state n1) (node-state n2)))
@@ -50,7 +50,7 @@ Modifications:
 
     (do*                                                    ; note use of sequential DO*
         (                                                   ; initialize local loop vars
-            (curNode (make-node :state start :parent nil))  ; current node: (start nil)
+            (curNode (make-node :state start :parent nil :score 0))  ; current node: (start nil)
             (OPEN (list curNode))                           ; OPEN list:    ((start nil))
             (CLOSED nil)                                    ; CLOSED list:  ( )
         )
