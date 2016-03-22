@@ -120,6 +120,11 @@ Modifications:
 
 ; generates the goal state for the given puzzle size
 (defun generateGoalState (puzSize)
+"
+  (generateGoalState puzSize): genetates the goal state based on puzzle size.
+
+"
+
     (setf *goalState* nil)
     (if (= puzSize 8)
         ; goal state for 8-puzzle
@@ -136,5 +141,8 @@ Modifications:
 )
 
 (defun goal-state? (state)
+"
+  (goal-state? state): Returns true if goal-state was reached.
+"
     (equal state *goalState*)
 )

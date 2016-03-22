@@ -19,6 +19,10 @@
 
 ; takes the arguments entered by the user and uses the appropiate action
 (defun readArgs (L)
+"
+  (readArgs L): Reads in the puzzle from the user and pushes to the *puzzle* list. Also checks for valid number of puzzle elements.
+
+"
 
   (setf num (length L))
   ; (if (= 0 num) (write "No args listed"))
@@ -35,6 +39,12 @@
 
 ; opens input file and stores the values
 (defun openFile (filename)
+
+ "
+  (openFile filename): Checks for valid file. Reads in file to *puzzle*
+  variable.
+
+"
   ; open file and check for valid file
   (setf fin (open filename :if-does-not-exist nil))
   (when (null fin) (return-from openFile (format t "Error: cannot open file ~a " filename)))
@@ -50,6 +60,11 @@
 
 ; reads in the list entered by the user
 (defun userInput ()
+"
+  (userInput): Prompts user for puzzle. Checks for valid puzzle length and
+  reads in puzzle to *puzzle* variable.
+
+"
   ; print prompt to have user enter digits
   (princ "Enter puzzle in row-major order with each number seperated by white space (press enter when complete): " )
   ; read in everyting that was entered by the user
@@ -74,6 +89,10 @@
 
 ; check puzzle function to check for values in correct range
 (defun checkPuzzle (puzSize)
+"
+  (checkPuzzle puzSize): Returns true if valid puzzle entries. 
+
+"
 
   (dolist (x *puzzle*)
     ; (write x)
@@ -85,6 +104,11 @@
 
 ; function that is called in lisp to get puzzle
 (defun 8puzzle (&rest puzzleInput)
+"
+  (8puzzle puzzleInput): Makes call to proper function based on input
+  entered by the user. 
+
+"
 
   (if (= (length puzzleInput) 0)
     (userInput)
@@ -94,7 +118,7 @@
   (checkPuzzle (length *puzzle*))
 )
 
-; check for one argument which should be filename
+; check for one argument which should be filename and calls to open file
 (if (= (length *args*) 1) 
   (openFile (car *args*))
   (format t "Command-line usage : clisp 8puzzle.lsp puzzlefile~%Usage inside CLISP: (8puzzle [puzzlelist])")
