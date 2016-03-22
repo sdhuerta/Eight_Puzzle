@@ -69,8 +69,8 @@
 )
 
 ;Test puzzleState
-(setf puzzleStates '((2 8 3 1 6 0 7 5 4) (2 8 3 1 6 4 7 5 0) (2 8 3 1 6 4 7 0 5) (2 8 3 1 0 4 7 6 5) (2 0 3 1 8 4 7 6 5) (0 2 3 1 8 4 7 6 5) (1 2 3 0 8 4 7 6 5) (1 2 3 8 0 4 7 6 5)))
+; (setf puzzleStates '((2 8 3 1 6 0 7 5 4) (2 8 3 1 6 4 7 5 0) (2 8 3 1 6 4 7 0 5) (2 8 3 1 0 4 7 6 5) (2 0 3 1 8 4 7 6 5) (0 2 3 1 8 4 7 6 5) (1 2 3 0 8 4 7 6 5) (1 2 3 8 0 4 7 6 5)))
 
-;Call Function
-(printPuzzle "BFS" puzzleStates 10 11 12 13 3)
+; ;Call Function
+; (printPuzzle "BFS" puzzleStates 10 11 12 13 3)
 

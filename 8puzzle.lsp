@@ -13,6 +13,7 @@
 |#
 
 (load 'search.lsp)
+(load 'solvable.lsp)
 
 ; global variable for the puzzle
 (setf *puzzle* nil)
@@ -123,3 +124,5 @@
   (openFile (car *args*))
   (format t "Command-line usage : clisp 8puzzle.lsp puzzlefile~%Usage inside CLISP: (8puzzle [puzzlelist])")
 )
+
+(bfs *puzzle*)

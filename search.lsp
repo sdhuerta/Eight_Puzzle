@@ -26,6 +26,7 @@ Modifications:
 ;--------------------------------------------------------------------------
 ; load file
 (load 'p_child.lsp)
+(load 'print.lsp)
 
 ; global variable for goal state of the puzzle
 (defvar *goalState*)
@@ -46,7 +47,7 @@ Modifications:
 
 ; Given a start state and a search type (BFS or DFS), return a path from the start to the goal.
 (defun search_bfs_dfs (start type)
-    ; (generateGoalState (1- (length start)))
+    (generateGoalState (1- (length start)))
 
     (do*                                                    ; note use of sequential DO*
         (                                                   ; initialize local loop vars
@@ -99,16 +100,24 @@ Modifications:
 ; and constructs the list of states that led to the current state
 ; by tracing back through the parents to the start node (nil parent).
 (defun build-solution (node node-list)
-    (do
-        ((path (list (node-state node))))        ; local loop var
-        ((null (node-parent node)) path)         ; termination condition
+    (let (finalPath)     
+        (do
+            ((path (list (node-state node))))       ; local loop var
+            ((null (node-parent node)) path)         ; termination condition
 
-        ; find the parent of the current node
-        (setf node (member-state (node-parent node) node-list))
+            ; find the parent of the current node
+            (setf node (member-state (node-parent node) node-list))
 
-        ; add it to the path
-        (setf path (cons (node-state node) path))
+            ; add it to the path
+            (setf path (cons (node-state node) path))
+            ; (write path)
+            ; (format t "~%")
+            (setf finalPath path)
+        )
+
+        (printPuzzle "BFS" finalPath 10 11 12 13 3)
     )
+
 )
 
 ; Member-state looks for a node on the node-list with the same state.
