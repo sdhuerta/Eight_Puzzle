@@ -103,6 +103,15 @@
   )
 )
 
+(defun startSearch ()
+
+  (bfs *puzzle*)
+  ; call DFID
+  ; call A*
+
+)
+
+
 ; function that is called in lisp to get puzzle
 (defun 8puzzle (&rest puzzleInput)
 "
@@ -116,13 +125,15 @@
     (readArgs puzzleInput)
   )
 
-  (checkPuzzle (length *puzzle*))
+  ; add way to check puzzle
+  ; (checkPuzzle (length *puzzle*))
+
+  (startSearch)
 )
 
 ; check for one argument which should be filename and calls to open file
 (if (= (length *args*) 1) 
-  (openFile (car *args*))
+  (progn (openFile (car *args*)) (startSearch))
   (format t "Command-line usage : clisp 8puzzle.lsp puzzlefile~%Usage inside CLISP: (8puzzle [puzzlelist])")
-)
 
-(bfs *puzzle*)
+)
