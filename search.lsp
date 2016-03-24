@@ -117,7 +117,7 @@ Modifications:
                     )
 
                     ((eq type 'astar)
-                        (setf (node-score child) (scoring (node-state child)))
+                        (setf (node-score child) (+ (node-score curNode) (scoring (node-state child))))
                         (setf OPEN (append OPEN (list child)))
                     )
 
