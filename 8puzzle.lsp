@@ -106,7 +106,8 @@
 (defun startSearch ()
 
   (bfs *puzzle*)
-  ; call DFID
+  (idfs *puzzle*)
+  (astar *puzzle*) ; call DFID)
   ; call A*
 
 )

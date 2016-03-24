@@ -32,10 +32,17 @@ Modifications:
 (defvar *goalState*)
 
 ; Node structure: stores state and parent.
-(defstruct node state parent score)
+(defstruct node 
+    state 
+    parent 
+    score 
+    depth
+)
 
 ; Test if two nodes have the same state.
-(defun equal-states (n1 n2) (equal (node-state n1) (node-state n2)))
+(defun equal-states (n1 n2) 
+    (equal (node-state n1) (node-state n2))
+)
 
 ;--------------------------------------------------------------------------
 
@@ -43,7 +50,9 @@ Modifications:
 (defun bfs (start) (search_bfs_dfs start 'bfs))
 
 ; Depth-first-search implements the OPEN list as a STACK of (state parent) nodes.
-(defun dfs (start) (search_bfs_dfs start 'dfs))
+(defun idfs (start) (search_bfs_dfs start 'idfs))
+
+(defun astar (start) (search_bfs_dfs start 'astar))
 
 ; Given a start state and a search type (BFS or DFS), return a path from the start to the goal.
 (defun search_bfs_dfs (start type)
@@ -51,16 +60,33 @@ Modifications:
 
     (do*                                                    ; note use of sequential DO*
         (                                                   ; initialize local loop vars
-            (curNode (make-node :state start :parent nil :score 0))  ; current node: (start nil)
+            (curNode (make-node :state start :parent nil :score 0 :depth 0))  ; current node: (start nil)
             (OPEN (list curNode))                           ; OPEN list:    ((start nil))
             (CLOSED nil)                                    ; CLOSED list:  ( )
+            (depthLimit 0)
+            (depthCount 0)                                  ; Track 
         )
 
         ; termination condition - return solution path when goal is found
         ((goal-state? (node-state curNode)) (build-solution curNode CLOSED))
 
-        ; loop body
-        (when (null OPEN) (return nil))             ; no solution
+        (cond 
+            ((null OPEN) (cond 
+                ((eq type 'idfs)
+                    ;(cond ((eq depthCount (list-length CLOSED)) (return nil)))
+                    (setf depthCount (list-length CLOSED))
+                    (incf depthLimit)
+                    (setf curNode (make-node :state start :parent nil :score 0 :depth 0))  
+                    (setf OPEN (list curNode))                           
+                    (setf CLOSED nil)                     
+                )
+
+                (t (return nil)))
+            )
+        )
+
+        ; Sort the remaining OPEN LIST, score ascending
+        (cond ((eq type 'astar) (sort OPEN #'< :key #'node-score)))
 
         ; get current node from OPEN, update OPEN and CLOSED
         (setf curNode (car OPEN))
@@ -71,7 +97,7 @@ Modifications:
         (dolist (child (puzzle_children (node-state curNode)))
 
             ; for each child node
-            (setf child (make-node :state child :parent (node-state curNode)))
+            (setf child (make-node :state child :parent (node-state curNode) :depth (incf (node-depth curNode))))
 
             ; if the node is not on OPEN or CLOSED
             (if (and (not (member child OPEN   :test #'equal-states))
@@ -83,8 +109,17 @@ Modifications:
                     ; BFS - add to end of OPEN list (queue)
                     ((eq type 'bfs) (setf OPEN (append OPEN (list child))))
 
-                    ; DFS - add to start of OPEN list (stack)
-                    ((eq type 'dfs) (setf OPEN (cons child OPEN)))
+                    ; IDFS - add to start of OPEN list (stack)
+                    ((eq type 'idfs)
+                        (cond
+                            ((< (node-depth curNode) depthLimit) (setf OPEN (cons child OPEN)))
+                        )
+                    )
+
+                    ((eq type 'astar)
+                        (setf (node-score child) (scoring (node-state child)))
+                        (setf OPEN (append OPEN (list child)))
+                    )
 
                     ; error handling for incorrect usage
                     (t (format t "SEARCH: bad search type! ~s~%" type) (return nil))
