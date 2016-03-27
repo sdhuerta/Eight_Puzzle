@@ -66,9 +66,9 @@ Modifications:
             (depthLimit 0)
             (depthCount 0)                                  ; Track 
         )
-
+	
         ; termination condition - return solution path when goal is found
-        ((goal-state? (node-state curNode)) (build-solution curNode CLOSED))
+        ((goal-state? (node-state curNode)) (build-solution curNode CLOSED OPEN type))
 
         (cond 
             ((null OPEN) (cond 
@@ -134,8 +134,9 @@ Modifications:
 ; Build-solution takes a state and a list of (state parent) pairs
 ; and constructs the list of states that led to the current state
 ; by tracing back through the parents to the start node (nil parent).
-(defun build-solution (node node-list)
-    (let (finalPath)     
+(defun build-solution (node node-list OPEN type)
+    (let ((finalPath) (genNodes (length node-list)) (exNodes (length OPEN))
+         (disNodes (length(remove-duplicates node-list))))    
         (do
             ((path (list (node-state node))))       ; local loop var
             ((null (node-parent node)) path)         ; termination condition
@@ -149,8 +150,8 @@ Modifications:
             ; (format t "~%")
             (setf finalPath path)
         )
-
-        (printPuzzle "BFS" finalPath 10 11 12 13 3)
+	
+        (printPuzzle type finalPath genNodes disNodes exNodes)
     )
 
 )

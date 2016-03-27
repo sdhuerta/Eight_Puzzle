@@ -35,10 +35,23 @@
  | before then printing out the next row from each of those states. Once the row has
  | been printed it moves on to the next row.
  |#
-(defun printPuzzle (name puzzleStates moveCount genNodes disNodes exNodes puzzleSize)  
-  (let ((rowStates (rowState puzzleStates puzzleSize)) (j 0))
+(defun printPuzzle (type puzzleStates genNodes disNodes exNodes)  
+  (let* ((puzzleSize (sqrt(length(car puzzleStates)))) (rowStates (rowState puzzleStates puzzleSize)) (j 0) 
+        (moveCount (- (length puzzleStates) 1)))
+
     ;Header information
-    (format t "~a~%" name)
+    (cond
+      ((eq type 'bfs) (format t "~a~%" "BFS Graph Search"))
+
+      ((eq type 'idfs) (format t "~a~%" "DFID Graph Search"))
+
+      ((eq type 'astarhamming) (format t "~a~%" "A* Graph Search (Heuristic: Hamming"))
+
+      ((eq type 'astarmanhatten) (format t "~a~%" "A* Graph Search (Heuristic: Manhatten"))
+
+      ((eq type 'astarnilsson) (format t "~a~%" "A* Graph Search (Heuristic: Nilsson's Sequence Score"))
+    )
+
     (format t "---------------~%")
     (format t "Solution found in ~d moves~%" moveCount)
     (format t "~d nodes generated (~d distinct nodes), ~d nodes expanded~%~%" genNodes disNodes exNodes)
