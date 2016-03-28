@@ -4,7 +4,8 @@
   This gets the user input from either the command line or a call to the
   8puzzle function in lisp. It accepts input as a file or as user entered
   numbers. The numbers are put into a global list and checked to see if the 
-  correct number of numbers was inputed and if they are valid numbers. 
+  correct number of numbers was inputed and if they are valid numbers. Then 
+  the search functions are called to solve the puzzle.
 
   Class: CSC 447 - Artificial Intelligence
   Authors: 
@@ -96,6 +97,7 @@
 
 "
   (let ((i 0) (elem) (puzSize) (lst))
+    (setf lst nil)
     (setf puzSize (* n n)) 
     (dotimes (i puzSize)
       (setf elem (random puzSize))
@@ -104,13 +106,15 @@
         ; if not in list
         (push elem lst)
         ; else get new number
-        (progn 
+        (progn
+          ; loop through adding 1 each time to find num not already in list 
           (loop while (eq nil (not (find elem lst))) do
             (if (= elem (1- puzSize))
               (setf elem 0)
               (setf elem (1+ elem))
             )
           )
+          ; push to list
           (push elem lst)
         )
       )
@@ -118,6 +122,7 @@
     ; checks if puzzle is solvable
     (if (not (solvable lst))
       (randomPuzzle n)
+      ; sets the puzzle
       (setf *puzzle* lst)
     )
   )
@@ -163,6 +168,9 @@
 
 ; checks if user wants to enter puzzle manually or have a puzzle randomly generated
 (defun puzzleType ()
+"
+  (puzzleType): Asks user to either enter a puzzle or give a row size to randomly generate a puzzle.
+"
   ; prompt for entering puzzle or randomly generating puzzle based on num rows
   (princ "To manually enter a puzzle enter 1. To have a puzzle randomly 
     generated, enter 2: ")
@@ -171,17 +179,21 @@
     (setf num (read))
 
     (cond 
+      ; checks if user entered 1
       ((= num 1 )
         (userInput)
       )
 
       ((= num 2)
+        ; checks for 2 and asks for number of rows in puzzle
         (princ "Enter number of rows (please enter a number greater than 2): ")
         (setf rows (read))
+        ; creates random puzzle
         (randomPuzzle rows)
-        (write *puzzle*)
+        ; prints puzzle for user to see
+        (format t "Randomly Generated Puzzle: ~a~%" *puzzle*)
       )
-
+      ; error checking
       (t (progn (format t "Invalid Option. Please Try Again~%") (puzzleType)))
     )
   )
