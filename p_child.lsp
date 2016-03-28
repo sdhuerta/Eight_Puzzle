@@ -94,3 +94,106 @@
         total_dis   
     )
 )
+
+(defun nilsson (puzzle)
+    (let*
+        (
+            (length (list-length puzzle))
+            (width (sqrt length))
+            (score 0)
+        )
+        (cond ((eq length 9)
+        	; Evaluate the Spiral Eight Puzzle
+	    	(dotimes (pos length)
+	    		(cond
+	    			((or (eq pos 0) (eq pos 1))
+	    				(cond
+	    					((eq 8 (nth pos puzzle))
+	    						(cond ((not (eq 1 (nth (1+ pos) puzzle)))
+	    							(setf score (+ score 2)))
+	    						)
+	    					)
+	    					((not (eq (nth pos puzzle) 
+	    						(1- (nth (1+ pos) puzzle)))) 
+	    						(setf score (+ score 2))
+	    					)
+	    				)
+	    			)
+	    			((or (eq pos 2) (eq pos 5))
+	    				(cond
+	    					((eq 8 (nth pos puzzle))
+	    						(cond ((not (eq 1 (nth (+ pos width) puzzle)))
+	    							(setf score (+ score 2)))
+	    						)
+	    					)
+	    					((not (eq (nth pos puzzle) 
+	    						(1- (nth (+ pos width) puzzle))))
+	    						(setf score (+ score 2))
+	    					)
+	    				)			
+	    			)
+	    			((or (eq pos 8) (eq pos 7))
+	    				(cond
+	    					((eq 8 (nth pos puzzle))
+	    						(cond ((not (eq 1 (nth (1- pos) puzzle)))
+	    							(setf score (+ score 2)))
+	    						)
+	    					)
+	    					((not (eq (1+ (nth pos puzzle)) 
+	    						(nth (1- pos) puzzle))) 
+	    						(setf score (+ score 2))
+	    					)
+	    				)    				
+	    			)
+	    			((or (eq pos 3) (eq pos 6))
+	    				(cond
+	    					((eq 8 (nth pos puzzle))
+	    						(cond ((not (eq 1 (nth (- pos width) puzzle)))
+	    							(setf score (+ score 2)))
+	    						)
+	    					)
+	    					((not (eq (1+ (nth pos puzzle)) 
+	    						(nth (- pos width) puzzle)))
+	    						(setf score (+ score 2))
+	    					)
+	    				) 				   				
+	    			)
+	    			(t (cond 
+	    				((not (eq (nth pos puzzle) 0))
+	    				(setf score (+ score 1)))
+	    				)			
+	    			)
+	  			))
+	    	)
+        ; Evaluate Puzzles w/ blank in last position
+    	(t 
+    		(dotimes (pos length)
+    			(cond
+    				((eq pos (1- length))
+    					(cond
+    						((not (eq (nth pos puzzle) 0))
+    							(setf score (+ score 1)))
+    					)
+    				)
+    				((eq (nth pos puzzle) (1- length))
+    					(cond
+    						((not (eq (nth (1+ pos) puzzle) 0))
+    							(setf score (+ score 2)))
+    					)
+    				)
+    				(t
+    					(cond
+    						((not (eq (nth pos puzzle) (1- (nth (1+ pos) puzzle))))
+    							(setf score (+ score 2))
+    						)
+
+    					)
+    				)
+    			)
+    		)
+
+    	)
+    	)
+        (+ (* 3 score) (manhattan puzzle))
+    )
+)

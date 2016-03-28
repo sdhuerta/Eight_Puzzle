@@ -77,12 +77,13 @@ Modifications:
         (cond 
             ((null OPEN) (cond 
                 ((eq type 'idfs)
+                	(format t "List Length: ~D  Depth: ~D ~%" depthCount depthLimit ) 
                     ;(cond ((eq depthCount (list-length CLOSED)) (return nil)))
                     (setf depthCount (list-length CLOSED))
-                    (incf depthLimit)
+                    (setf depthLimit (1+ depthLimit))
                     (setf curNode (make-node :state start :parent nil :score 0 :depth 0))  
-                    (setf OPEN (list curNode))                           
-                    (setf CLOSED nil)                     
+                    (setf OPEN (list curNode))                          
+                    (setf CLOSED nil)                  
                 )
 
                 (t (return nil)))
@@ -98,23 +99,23 @@ Modifications:
         (setf CLOSED (cons curNode CLOSED))
 
 	;Since we are expanding the node we increment expanded nodes
-	(setf exNodes (+ 1 exNodes))
+	(incf  exNodes)
 
         ; add successors of current node to OPEN
         (dolist (child (puzzle_children (node-state curNode)))
 
             ;For every child we generate we increment generated nodes
-            (setf genNodes (+ 1 genNodes))
+            (incf  genNodes)
 
             ; for each child node
-            (setf child (make-node :state child :parent (node-state curNode) :depth (incf (node-depth curNode)))) 	
+            (setf child (make-node :state child :parent (node-state curNode) :depth (1+ (node-depth curNode))))
 
             ; if the node is not on OPEN or CLOSED
             (if (and (not (member child OPEN   :test #'equal-states))
                      (not (member child CLOSED :test #'equal-states)))
 
                 ; add it to the OPEN list and increment distinct nodes
-                (progn (setf disNodes (+ 1 disNodes))
+                (progn (incf disNodes)
 		(cond		
                     ; BFS - add to end of OPEN list (queue)
                     ((eq type 'bfs) (setf OPEN (append OPEN (list child))))
@@ -127,7 +128,7 @@ Modifications:
                     )
 
                     ((eq type 'astar)
-                        (setf (node-score child) (+ (node-score curNode) (scoring (node-state child))))
+                        (setf (node-score child) (+ (node-depth child) (nilsson (node-state child))))
                         (setf OPEN (append OPEN (list child)))
                     )
 
