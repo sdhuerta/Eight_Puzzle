@@ -24,9 +24,7 @@
   (readArgs L): Reads in the puzzle from the user and pushes to the *puzzle* list. Also checks for valid number of puzzle elements.
 
 "
-
   (setf num (length L))
-  ; (if (= 0 num) (write "No args listed"))
   (if (and (= 0 (mod (sqrt num) 1)) (> num 4))
       ; pushes input to list as integer
       (dolist (x L) (push x *puzzle*))
@@ -55,7 +53,7 @@
     ; add to the global variable
     (push data *puzzle*)
   )  
-
+  ; reverse puzzle so it is in the order that was entered
   (setf *puzzle* (reverse *puzzle*))
 )
 
@@ -72,6 +70,7 @@
   (let ((vals) (num nil) (numList nil) (input (read-line)))
     (loop for x across input do (push (string x) vals))
     (dolist (y vals)
+      ; checks for spaces and ignores thems
       (if (not (string= #\space y))
         (setf num (concatenate 'string y num))
         (progn (push (parse-integer num) numList) (setf num nil)) 
@@ -84,6 +83,7 @@
     (if (not (and (= 0 (mod (sqrt (length numList)) 1)) (> (length numList) 4)))
       (progn (format t "Invalid number of puzzle elements. Please try again~%") (userInput))   
     )
+    ; set the list to puzzle
     (setf *puzzle* numList)
   )
 )
@@ -96,22 +96,34 @@
 "
 
   (dolist (x *puzzle*)
-    ; (write x)
+    ; checks for number between 0 and N^2-1
     (if (or (< x 0) (> x (- puzSize 1))) 
-      (format t "Puzzle input incorrect. Enter numbers between 0 and N^2 - 1 (N is the number of rows in the puzzle). Exiting Program")
+      ; returns false
+      (return-from checkPuzzle nil)
     )
   )
+  ; returns true
+  (return-from checkPuzzle t)
 )
 
 (defun startSearch ()
+  "
+  (startSearch): Checks for solvable puzzle and if it is,
+  calls each search. 
+"
 
-  ;(bfs *puzzle*)
-  (idfs *puzzle*)
-  ;(astar *puzzle*) ; call DFID)
-  ; call A*
-
+  ; checks if puzzle is solvable
+  (if (solvable *puzzle*)
+    ; calls the searches
+    ( progn 
+      (bfs *puzzle*)
+      (idfs *puzzle*)
+      (astar *puzzle*) 
+    )
+    ; error message and exits program
+    (format t "Puzzle is unsolvable. Exiting Program~%")
+  )
 )
-
 
 ; function that is called in lisp to get puzzle
 (defun 8puzzle (&rest puzzleInput)
@@ -120,21 +132,23 @@
   entered by the user. 
 
 "
-
+  ; checks for no puzzle given in clisp and prompts for puzzle
   (if (= (length puzzleInput) 0)
     (userInput)
+    ; reads in input from the user
     (readArgs puzzleInput)
   )
 
-  ; add way to check puzzle
-  ; (checkPuzzle (length *puzzle*))
-
-  (startSearch)
+  ; checks for valid puzzle entered by user
+  (if (checkPuzzle (length *puzzle*))
+    ; calls to run searches
+    (startSearch)
+    (format t "Puzzle input incorrect. Enter numbers between 0 and N^2 - 1 (N is the number of rows in the puzzle). Exiting Program")
+  )
 )
 
 ; check for one argument which should be filename and calls to open file
 (if (= (length *args*) 1) 
   (progn (openFile (car *args*)) (startSearch))
   (format t "Command-line usage : clisp 8puzzle.lsp puzzlefile~%Usage inside CLISP: (8puzzle [puzzlelist])")
-
 )
