@@ -88,6 +88,42 @@
   )
 )
 
+
+(defun randomPuzzle (n)
+"
+  (randomPuzzle n): creates a random n-sized puzzle. The range is from 
+  0 to n^2 - 1 with no repeats. 
+
+"
+  (let ((i 0) (elem) (puzSize) (lst))
+    (setf puzSize (* n n)) 
+    (dotimes (i puzSize)
+      (setf elem (random puzSize))
+      ; find returns nil if not in list
+      (if (not (find elem lst))
+        ; if not in list
+        (push elem lst)
+        ; else get new number
+        (progn 
+          (loop while (eq nil (not (find elem lst))) do
+            (if (= elem (1- puzSize))
+              (setf elem 0)
+              (setf elem (1+ elem))
+            )
+          )
+          (push elem lst)
+        )
+      )
+    )
+    ; checks if puzzle is solvable
+    (if (not (solvable lst))
+      (randomPuzzle n)
+      (setf *puzzle* lst)
+    )
+  )
+)
+
+
 ; check puzzle function to check for values in correct range
 (defun checkPuzzle (puzSize)
 "
@@ -125,6 +161,32 @@
   )
 )
 
+; checks if user wants to enter puzzle manually or have a puzzle randomly generated
+(defun puzzleType ()
+  ; prompt for entering puzzle or randomly generating puzzle based on num rows
+  (princ "To manually enter a puzzle enter 1. To have a puzzle randomly 
+    generated, enter 2: ")
+
+  (let ((num) (rows))
+    (setf num (read))
+
+    (cond 
+      ((= num 1 )
+        (userInput)
+      )
+
+      ((= num 2)
+        (princ "Enter number of rows (please enter a number greater than 2): ")
+        (setf rows (read))
+        (randomPuzzle rows)
+        (write *puzzle*)
+      )
+
+      (t (progn (format t "Invalid Option. Please Try Again~%") (puzzleType)))
+    )
+  )
+)
+
 ; function that is called in lisp to get puzzle
 (defun 8puzzle (&rest puzzleInput)
 "
@@ -134,7 +196,7 @@
 "
   ; checks for no puzzle given in clisp and prompts for puzzle
   (if (= (length puzzleInput) 0)
-    (userInput)
+    (puzzleType)
     ; reads in input from the user
     (readArgs puzzleInput)
   )
