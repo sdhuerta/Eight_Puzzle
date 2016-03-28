@@ -90,10 +90,12 @@ Modifications:
   (findZero L): Finds index of 0 in the puzzle.
 
 "
+; loops through looking for 0
   (let ((i 0) (index))
     (dotimes (i (length L))
       (setf index (nth i L))
       (if (= index 0)
+        ; sets value when its found
         (setf *loc* i)
       )
     )
@@ -124,15 +126,18 @@ Modifications:
         ; divide blank by len
         (setf div (truncate (/ *loc* len)))
 
+        ; checks for odd or even row with 0 in it
         (cond
           ((oddp div)
+            ; checks number of inversions
             (if (evenp *inv*)
               (setf *flag* t)
               (setf *flag* nil)
             )
           )
-
+          ; checks for even row with 0
           ((evenp div)
+            ; checks for odd number of inversions
             (if (oddp *inv*)
               (setf *flag* t)
               (setf *flag* nil)
