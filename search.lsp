@@ -65,10 +65,14 @@ Modifications:
             (CLOSED nil)                                    ; CLOSED list:  ( )
             (depthLimit 0)
             (depthCount 0)                                  ; Track 
-        )
+            (duplicateNodes 0)
+	    (genNodes 0)
+	    (exNodes 0)
+	    (disNodes 0)
+	)
 	
         ; termination condition - return solution path when goal is found
-        ((goal-state? (node-state curNode)) (build-solution curNode CLOSED OPEN type))
+        ((goal-state? (node-state curNode)) (build-solution curNode CLOSED type genNodes disNodes exNodes))
 
         (cond 
             ((null OPEN) (cond 
@@ -93,19 +97,25 @@ Modifications:
         (setf OPEN (cdr OPEN))
         (setf CLOSED (cons curNode CLOSED))
 
+	;Since we are expanding the node we increment expanded nodes
+	(setf exNodes (+ 1 exNodes))
+
         ; add successors of current node to OPEN
         (dolist (child (puzzle_children (node-state curNode)))
 
+            ;For every child we generate we increment generated nodes
+            (setf genNodes (+ 1 genNodes))
+
             ; for each child node
-            (setf child (make-node :state child :parent (node-state curNode) :depth (incf (node-depth curNode))))
+            (setf child (make-node :state child :parent (node-state curNode) :depth (incf (node-depth curNode)))) 	
 
             ; if the node is not on OPEN or CLOSED
             (if (and (not (member child OPEN   :test #'equal-states))
                      (not (member child CLOSED :test #'equal-states)))
 
-                ; add it to the OPEN list
-                (cond
-
+                ; add it to the OPEN list and increment distinct nodes
+                (progn (setf disNodes (+ 1 disNodes))
+		(cond		
                     ; BFS - add to end of OPEN list (queue)
                     ((eq type 'bfs) (setf OPEN (append OPEN (list child))))
 
@@ -123,7 +133,7 @@ Modifications:
 
                     ; error handling for incorrect usage
                     (t (format t "SEARCH: bad search type! ~s~%" type) (return nil))
-                )
+                ))
             )
         )
     )
@@ -134,9 +144,8 @@ Modifications:
 ; Build-solution takes a state and a list of (state parent) pairs
 ; and constructs the list of states that led to the current state
 ; by tracing back through the parents to the start node (nil parent).
-(defun build-solution (node node-list OPEN type)
-    (let ((finalPath) (genNodes (length node-list)) (exNodes (length OPEN))
-         (disNodes (length(remove-duplicates node-list))))    
+(defun build-solution (node node-list type genNodes disNodes exNodes)
+    (let ((finalPath))    
         (do
             ((path (list (node-state node))))       ; local loop var
             ((null (node-parent node)) path)         ; termination condition
