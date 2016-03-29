@@ -286,10 +286,20 @@ Modifications:
     )
 )
 
-; generates the goal state for the given puzzle size
+#| 
+  
+  Author: Allison Bodvig
+
+  Generates the goal-state of the puzzle given the size of the puzzle. The 
+  goal state is spiral for the 8-puzzle and for the other puzzles, the goal-
+  state is when the blank is in the lower right corner.
+  
+|#
 (defun generateGoalState (puzSize)
 "
   (generateGoalState puzSize): genetates the goal state based on puzzle size.
+
+  puzSize - number of elements in the puzzle
 
 "
 

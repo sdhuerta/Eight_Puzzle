@@ -26,10 +26,19 @@ Modifications:
 (defvar *inv*)
 (defvar *loc*)
 
-; original solvable function which works for 8-puzzle
+#| 
+  
+  Author: Dr. John Weiss
+
+  Checks if 8-puzzle is solvable or not
+
+  
+|#
 (defun 8solvable (L)
 "
   (8solvable L): Checks if 8puzzle is solvable. 
+
+  L - puzzle to be checked
 
 "
 
@@ -38,9 +47,18 @@ Modifications:
     (eq *flag* (evenp (position 0 L)))
 )
 
+
+#| 
+  
+  Author: Dr John Weiss
+
+|#
 (defun disorder (elem L)
 "
   (disorder elem L): Used to help see if 8-puzzle is solvable 
+
+  elem - certain element of puzzle
+  L - puzzle
 
 "
     (cond
@@ -53,11 +71,23 @@ Modifications:
     )
 )
 
+
+#| 
+  
+  Author: Allison Bodvig
+
+  Counts the number of inversions in the puzzle by looping through the list
+  twice and seeing when a element in a puzzle has numbers that are less than 
+  it in an index after the index of the nuber
+  
+|#
 (defun inversions (L)
 "
   (inversions L): Counts the number of inversions in the puzzle.
   An inversion is when a tile in a puzzle has a smaller number 
   preceding it.  
+
+  L - puzzle to be checked
 
 "
   ; set inversions
@@ -85,9 +115,19 @@ Modifications:
   )
 )
 
+
+#| 
+  
+  Author: Allison Bodvig
+
+  Finds the index of the zero element in the list 
+  
+|#
 (defun findZero (L)
 "
   (findZero L): Finds index of 0 in the puzzle.
+
+  L - puzzle list
 
 "
 ; loops through looking for 0
@@ -102,9 +142,19 @@ Modifications:
   )
 )
 
+
+#| 
+  
+  Author: Allison Bodvig
+
+  Returns true or nil if a given n-puzzle is solvable or not
+  
+|#
 (defun Nsolvable (L)
 "
   (Nsolvable L): Checks if N-size puzzle is solvable. Returns true or nil.
+
+  L - puzzle list
 "
   (setf *flag* nil)
   (setf *loc* nil)
@@ -149,9 +199,18 @@ Modifications:
   )
 )
 
+#| 
+  
+  Author: Allison Bodvig
+
+  Calls the correct solvable function based on the size of the puzzle. 
+  
+|#
 (defun solvable (L)
 "
-  (solvable L): Checks puzzle size and calls appropiate solvable fucntion. 
+  (solvable L): Checks puzzle size and calls appropiate solvable fucntion.
+
+  L - puzzle list 
 
 "
   ; looks a lenght of puzzle and calls correct solvable function

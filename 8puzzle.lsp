@@ -19,12 +19,21 @@
 ; global variable for the puzzle
 (setf *puzzle* nil)
 
-; takes the arguments entered by the user and uses the appropiate action
+#| 
+  
+  Author: Allison Bodvig
+
+  Reads in the puzzle from the user and pushes to the global puzzle. 
+  The list is also checked for the correct number of arguments. 
+  
+|#
 (defun readArgs (L)
-"
+  "
   (readArgs L): Reads in the puzzle from the user and pushes to the *puzzle* list. Also checks for valid number of puzzle elements.
 
-"
+    L - list of inputs entered by the user
+
+  "
   (setf num (length L))
   (if (and (= 0 (mod (sqrt num) 1)) (> num 4))
       ; pushes input to list as integer
@@ -37,14 +46,22 @@
     ; (write *puzzle*)
 )
 
-; opens input file and stores the values
+#| 
+  
+  Author: Allison Bodvig
+
+  Checks for a valid file and then opens the file. The values from the file are read in a stored in *puzzle*.
+  
+|#
 (defun openFile (filename)
 
  "
   (openFile filename): Checks for valid file. Reads in file to *puzzle*
   variable.
 
-"
+  filename - name of file
+
+  "
   ; open file and check for valid file
   (setf fin (open filename :if-does-not-exist nil))
   (when (null fin) (return-from openFile (format t "Error: cannot open file ~a " filename)))
@@ -58,13 +75,20 @@
   (setf *puzzle* (reverse *puzzle*))
 )
 
-; reads in the list entered by the user
+#| 
+  
+  Author: Allison Bodvig
+
+  Prompts user to enter a puzzle, then reads in that puzzle. It also checks for
+  a valid number of puzzle entries. 
+  
+|#
 (defun userInput ()
-"
+  "
   (userInput): Prompts user for puzzle. Checks for valid puzzle length and
   reads in puzzle to *puzzle* variable.
 
-"
+  "
   ; print prompt to have user enter digits
   (princ "Enter puzzle in row-major order with each number seperated by white space (press enter when complete): " )
   ; read in everyting that was entered by the user
@@ -89,13 +113,21 @@
   )
 )
 
+#| 
+  
+  Author: Allison Bodvig
 
+  Creates a random puzzle with size n^2 and numbers ranging from 0 to N^2 - 1
+  
+|#
 (defun randomPuzzle (n)
-"
+  "
   (randomPuzzle n): creates a random n-sized puzzle. The range is from 
   0 to n^2 - 1 with no repeats. 
 
-"
+  n - number of rows in the puzzle
+
+  "
   (let ((i 0) (elem) (puzSize) (lst))
     (setf lst nil)
     (setf puzSize (* n n)) 
@@ -129,12 +161,19 @@
 )
 
 
-; check puzzle function to check for values in correct range
+#| 
+  
+  Author: Allison Bodvig
+
+  This checks that the puzzle values are between 0 and n^2-1 where n is the number of rows.
+|#
 (defun checkPuzzle (puzSize)
-"
+  "
   (checkPuzzle puzSize): Returns true if valid puzzle entries. 
 
-"
+  puzSize - number of elements in the puzzle
+
+  "
 
   (dolist (x *puzzle*)
     ; checks for number between 0 and N^2-1
@@ -147,11 +186,18 @@
   (return-from checkPuzzle t)
 )
 
+#| 
+  
+  Author: Allison Bodvig
+
+  The puzzle is checked to see if it is solvable. If it is, each search type is called.
+  
+|#
 (defun startSearch ()
   "
   (startSearch): Checks for solvable puzzle and if it is,
   calls each search. 
-"
+  " 
 
   ; checks if puzzle is solvable
   (if (solvable *puzzle*)
@@ -169,11 +215,19 @@
   )
 )
 
-; checks if user wants to enter puzzle manually or have a puzzle randomly generated
+#| 
+  
+  Author: Allison Bodvig
+
+  This function is used when the program is being called within clisp. It asks 
+  the user if they want to enter a puzzle or have one randomly created. The 
+  randomly created puzzle will be solvable.  
+  
+|#
 (defun puzzleType ()
-"
+  "
   (puzzleType): Asks user to either enter a puzzle or give a row size to randomly generate a puzzle.
-"
+  "
   ; prompt for entering puzzle or randomly generating puzzle based on num rows
   (princ "To manually enter a puzzle enter 1. To have a puzzle randomly 
     generated, enter 2: ")
@@ -202,13 +256,21 @@
   )
 )
 
-; function that is called in lisp to get puzzle
+#| 
+  
+  Author: Allison Bodvig
+
+  This function is called directly from clisp. if no arguments are given, the user is propmted for the puzzle. Otherwise reads in each argument as an element in the puzzle.
+  
+|#
 (defun 8puzzle (&rest puzzleInput)
-"
-  (8puzzle puzzleInput): Makes call to proper function based on input
+  "
+  (8puzzle &rest puzzleInput): Makes call to proper function based on input
   entered by the user. 
 
-"
+  puzzleInput - each puzzle element
+
+  "
   ; checks for no puzzle given in clisp and prompts for puzzle
   (if (= (length puzzleInput) 0)
     (puzzleType)
