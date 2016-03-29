@@ -49,11 +49,11 @@
 
       ((eq type 'idfs) (format t "~a~%" "DFID Graph Search"))
 
-      ((eq type 'astarhamming) (format t "~a~%" "A* Graph Search (Heuristic: Hamming"))
+      ((eq type 'astar_hamming) (format t "~a~%" "A* Graph Search (Heuristic: Hamming)"))
 
-      ((eq type 'astarmanhatten) (format t "~a~%" "A* Graph Search (Heuristic: Manhatten"))
+      ((eq type 'astar_manhat) (format t "~a~%" "A* Graph Search (Heuristic: Manhattan)"))
 
-      ((eq type 'astarnilsson) (format t "~a~%" "A* Graph Search (Heuristic: Nilsson's Sequence Score"))
+      ((eq type 'astar_nilsson) (format t "~a~%" "A* Graph Search (Heuristic: Nilsson's Sequence Score)"))
     )
 
     (format t "---------------~%")

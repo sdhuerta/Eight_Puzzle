@@ -155,7 +155,7 @@ Modifications:
             ((null OPEN) (cond 
             	; and search is of type idfs
                 ((eq type 'idfs)
-                	(format t "List Length: ~D  Depth: ~D ~%" depthCount depthLimit ) 
+                	;(format t "List Length: ~D  Depth: ~D ~%" depthCount depthLimit ) 
                 	; check that we aren't stuck and end if we are
                     (cond ((eq depthCount (list-length CLOSED)) (return nil)))
                     ; record the length of this closed list to check against the next
