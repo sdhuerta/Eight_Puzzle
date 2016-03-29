@@ -73,7 +73,6 @@ Modifications:
 "
 )
 
-
 ; A* using hamming score to determine best node in list
 (defun astar_hamming (start) (search_bfs_dfs start 'astar_hamming)
 "
@@ -147,7 +146,9 @@ Modifications:
 		)
 	
         ; termination condition - return solution path when goal is found
-        ((goal-state? (node-state curNode)) (build-solution curNode CLOSED type genNodes disNodes exNodes))
+        ((goal-state? (node-state curNode)) 
+            (format t "SOLUTION AT DEPTH: ~d~%" (node-depth curNode))
+            (build-solution curNode CLOSED type genNodes disNodes exNodes))
 
 
         (cond 
@@ -155,7 +156,7 @@ Modifications:
             ((null OPEN) (cond 
             	; and search is of type idfs
                 ((eq type 'idfs)
-                	;(format t "List Length: ~D  Depth: ~D ~%" depthCount depthLimit ) 
+                	(format t "List Length: ~D  Depth: ~D ~%" depthCount depthLimit ) 
                 	; check that we aren't stuck and end if we are
                     (cond ((eq depthCount (list-length CLOSED)) (return nil)))
                     ; record the length of this closed list to check against the next
@@ -190,6 +191,9 @@ Modifications:
 		(incf  exNodes)
 
         ; add successors of current node to OPEN
+
+        (if (or (not (eq type 'idfs)) (<= (node-depth curNode) depthLimit))
+
         (dolist (child (puzzle_children (node-state curNode)))
 
 	        ;For every child we generate we increment generated nodes
@@ -200,8 +204,13 @@ Modifications:
 	        	:depth (1+ (node-depth curNode))))
 
 	        ; if the node is not on OPEN or CLOSED
-	        (if (and (not (member child OPEN   :test #'equal-states))
-	                 (not (member child CLOSED :test #'equal-states)))
+
+	        (if (or (and (eq type 'idfs) (< (node-depth curNode) depthLimit)) 
+                (and (not (member child OPEN   :test #'equal-states))
+	                 (not (member child CLOSED :test #'equal-states))
+                ))
+
+                     
 	        
 	        ; add it to the OPEN list and increment distinct nodes
 	        (progn (incf disNodes)
@@ -210,11 +219,7 @@ Modifications:
 	            ((eq type 'bfs) (setf OPEN (append OPEN (list child))))
 
 	            ; IDFS - add to start of OPEN list (stack) up to the depth
-	            ((eq type 'idfs)
-	                (cond
-	                    ((< (node-depth curNode) depthLimit) (setf OPEN (cons child OPEN)))
-	                )
-	            )
+	            ((eq type 'idfs) (setf OPEN (cons child OPEN)))
 
 	           	; if A* type, let's check which A* type and proceed
 	            ((or (eq type 'astar_hamming) (eq type 'astar_manhat) 
@@ -244,7 +249,7 @@ Modifications:
 	            ; error handling for incorrect usage
 	            (t (format t "SEARCH: bad search type! ~s~%" type) (return nil))
     		)))
-    	)
+    	))
     )
 )
 
