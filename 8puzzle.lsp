@@ -159,7 +159,10 @@
     ( progn 
       (bfs *puzzle*)
       (idfs *puzzle*)
-      (astar *puzzle*) 
+      (astar_hamming *puzzle*) ; Admissable Heuristic - hamming distance
+      (astar_manhat *puzzle*) ; Admissable Heuristic - manhattan distance
+      (astar_nilsson *puzzle*) ; Inadmissable Heuristic - Nilsson's sequence score
+
     )
     ; error message and exits program
     (format t "Puzzle is unsolvable. Exiting Program~%")

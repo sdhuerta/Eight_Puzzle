@@ -31,31 +31,106 @@ Modifications:
 ; global variable for goal state of the puzzle
 (defvar *goalState*)
 
-; Node structure: stores state and parent.
+; Node structure: 
 (defstruct node 
-    state 
-    parent 
-    score 
-    depth
+    state  ; the list of integer values representing the puzzle
+    parent ; the parent node
+    score  ; the score of the list, useful for A*
+    depth  ; the depth of the node, useful for A* and IDFS
 )
 
 ; Test if two nodes have the same state.
-(defun equal-states (n1 n2) 
+(defun equal-states (n1 n2)
+"
+  (equal-states n1 n2): test if lists are the same
+
+  n1 - first list to compare
+
+  n2 - second list to compare
+
+" 
     (equal (node-state n1) (node-state n2))
 )
 
 ;--------------------------------------------------------------------------
 
 ; Breadth-first-search implements the OPEN list as a QUEUE of (state parent) nodes.
-(defun bfs (start) (search_bfs_dfs start 'bfs))
+(defun bfs (start) (search_bfs_dfs start 'bfs)
+"
+  (bfs start): Search the graph using BFS
+
+  start - list of elements representing initial state of the puzzle 
+
+"
+)
+
 
 ; Depth-first-search implements the OPEN list as a STACK of (state parent) nodes.
-(defun idfs (start) (search_bfs_dfs start 'idfs))
+(defun idfs (start) (search_bfs_dfs start 'idfs)
+"
+  (idfs start): Returns true if valid puzzle entries. 
 
-(defun astar (start) (search_bfs_dfs start 'astar))
+"
+)
 
-; Given a start state and a search type (BFS or DFS), return a path from the start to the goal.
+
+; A* using hamming score to determine best node in list
+(defun astar_hamming (start) (search_bfs_dfs start 'astar_hamming)
+"
+  (astar_hamming start): Returns true if valid puzzle entries. 
+
+"
+)
+
+
+; A* using manhattan score to determine best node in list
+(defun astar_manhat (start) (search_bfs_dfs start 'astar_manhat)
+"
+  (astar_manhat start): Returns true if valid puzzle entries. 
+
+"
+)
+
+
+; A* using nilsson score to determine best node in list
+(defun astar_nilsson (start) (search_bfs_dfs start 'astar_nilsson)
+"
+  (astar_nilsson start): Returns true if valid puzzle entries. 
+
+"
+)
+
+
+#|
+	Function: search_bfs_dfs
+
+	Author: Dr. John Weiss
+
+	Modified: Steven Huerta
+    
+    Description: This function is a catch all for the three
+    types of search functions: BFS, IDFS, and A*. This function
+    calls the other functions to generate children and search the 
+    graph generated to find a goal state. After finding a goal state,
+    the function will call a print function to display results on the
+    screen
+
+    Param: start - a list of n^2 elements representing the intial
+    			   state of the slide puzzle
+    		type - a string value that represents the type of search
+
+|#
 (defun search_bfs_dfs (start type)
+"
+  (search_bfs_dfs start type): Creates and explores a graph for a
+  	solution to the puzzle.
+
+  	start - list of elements representing initial state of the puzzle
+
+  	type - string value representing search type (bfs, idfs 
+  		   , astar_hamming, astar_manhat, or astar_nilsson)
+
+"	
     (generateGoalState (1- (length start)))
 
     (do*                                                    ; note use of sequential DO*
@@ -63,80 +138,113 @@ Modifications:
             (curNode (make-node :state start :parent nil :score 0 :depth 0))  ; current node: (start nil)
             (OPEN (list curNode))                           ; OPEN list:    ((start nil))
             (CLOSED nil)                                    ; CLOSED list:  ( )
-            (depthLimit 0)
-            (depthCount 0)                                  ; Track 
+            (depthLimit 0)   ; Keep track of the allowable depth
+            (depthCount 0)   ; Track the size of the CLOSED list 
             (duplicateNodes 0)
-	    (genNodes 0)
-	    (exNodes 0)
-	    (disNodes 0)
-	)
+		    (genNodes 0)
+		    (exNodes 0)
+		    (disNodes 0)
+		)
 	
         ; termination condition - return solution path when goal is found
         ((goal-state? (node-state curNode)) (build-solution curNode CLOSED type genNodes disNodes exNodes))
 
+
         (cond 
+        	; if the CLOSED list is empty
             ((null OPEN) (cond 
+            	; and search is of type idfs
                 ((eq type 'idfs)
                 	(format t "List Length: ~D  Depth: ~D ~%" depthCount depthLimit ) 
-                    ;(cond ((eq depthCount (list-length CLOSED)) (return nil)))
+                	; check that we aren't stuck and end if we are
+                    (cond ((eq depthCount (list-length CLOSED)) (return nil)))
+                    ; record the length of this closed list to check against the next
+                    ; depth search
                     (setf depthCount (list-length CLOSED))
+
+                    ; iterate the depth counter
                     (setf depthLimit (1+ depthLimit))
+
+                    ; reset all the values to initial conditions
                     (setf curNode (make-node :state start :parent nil :score 0 :depth 0))  
                     (setf OPEN (list curNode))                          
                     (setf CLOSED nil)                  
                 )
-
+                ; if not idfs, then quit
                 (t (return nil)))
             )
         )
 
-        ; Sort the remaining OPEN LIST, score ascending
-        (cond ((eq type 'astar) (sort OPEN #'< :key #'node-score)))
+        ; If an A* search
+        (cond ((or (eq type 'astar_hamming) (eq type 'astar_manhat) 
+        	(eq type 'astar_nilsson)) 
+        	; sort the list ascending values
+        	(sort OPEN #'< :key #'node-score)))
 
         ; get current node from OPEN, update OPEN and CLOSED
         (setf curNode (car OPEN))
         (setf OPEN (cdr OPEN))
         (setf CLOSED (cons curNode CLOSED))
 
-	;Since we are expanding the node we increment expanded nodes
-	(incf  exNodes)
+		;Since we are expanding the node we increment expanded nodes
+		(incf  exNodes)
 
         ; add successors of current node to OPEN
         (dolist (child (puzzle_children (node-state curNode)))
 
-            ;For every child we generate we increment generated nodes
-            (incf  genNodes)
+	        ;For every child we generate we increment generated nodes
+	        (incf  genNodes)
 
-            ; for each child node
-            (setf child (make-node :state child :parent (node-state curNode) :depth (1+ (node-depth curNode))))
+	        ; for each child node
+	        (setf child (make-node :state child :parent (node-state curNode) 
+	        	:depth (1+ (node-depth curNode))))
 
-            ; if the node is not on OPEN or CLOSED
-            (if (and (not (member child OPEN   :test #'equal-states))
-                     (not (member child CLOSED :test #'equal-states)))
+	        ; if the node is not on OPEN or CLOSED
+	        (if (and (not (member child OPEN   :test #'equal-states))
+	                 (not (member child CLOSED :test #'equal-states)))
+	        
+	        ; add it to the OPEN list and increment distinct nodes
+	        (progn (incf disNodes)
+			(cond		
+	            ; BFS - add to end of OPEN list (queue)
+	            ((eq type 'bfs) (setf OPEN (append OPEN (list child))))
 
-                ; add it to the OPEN list and increment distinct nodes
-                (progn (incf disNodes)
-		(cond		
-                    ; BFS - add to end of OPEN list (queue)
-                    ((eq type 'bfs) (setf OPEN (append OPEN (list child))))
+	            ; IDFS - add to start of OPEN list (stack) up to the depth
+	            ((eq type 'idfs)
+	                (cond
+	                    ((< (node-depth curNode) depthLimit) (setf OPEN (cons child OPEN)))
+	                )
+	            )
 
-                    ; IDFS - add to start of OPEN list (stack)
-                    ((eq type 'idfs)
-                        (cond
-                            ((< (node-depth curNode) depthLimit) (setf OPEN (cons child OPEN)))
-                        )
-                    )
+	           	; if A* type, let's check which A* type and proceed
+	            ((or (eq type 'astar_hamming) (eq type 'astar_manhat) 
+	            	(eq type 'astar_nilsson))
+	            	(cond 
+	            		; score the child with hamming
+	            		((eq type 'astar_hamming)
+	                    (setf (node-score child) (+ (node-depth child) 
+	                    	(hamming (node-state child))))
+	                    (setf OPEN (append OPEN (list child)))
+	                   	)
+	            		; score the child with manhattan
+	            		((eq type 'astar_manhat)
+	            		(setf (node-score child) (+ (node-depth child) 
+	            			(manhattan (node-state child))))
+	                    (setf OPEN (append OPEN (list child)))
+	                    )
+	                    ; score the child with nilsson
+	                    ((eq type 'astar_nilsson)
+	            		(setf (node-score child) (+ (node-depth child) 
+	            			(nilsson (node-state child))))
+	                    (setf OPEN (append OPEN (list child)))
+	                    )
+	                )
+	            )
 
-                    ((eq type 'astar)
-                        (setf (node-score child) (+ (node-depth child) (nilsson (node-state child))))
-                        (setf OPEN (append OPEN (list child)))
-                    )
-
-                    ; error handling for incorrect usage
-                    (t (format t "SEARCH: bad search type! ~s~%" type) (return nil))
-                ))
-            )
-        )
+	            ; error handling for incorrect usage
+	            (t (format t "SEARCH: bad search type! ~s~%" type) (return nil))
+    		)))
+    	)
     )
 )
 
