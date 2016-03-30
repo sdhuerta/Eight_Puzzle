@@ -203,11 +203,11 @@
   (if (solvable *puzzle*)
     ; calls the searches
     ( progn 
-      ;(bfs *puzzle*)
+      (bfs *puzzle*)
       (idfs *puzzle*)
-      ;(astar_hamming *puzzle*) ; Admissable Heuristic - hamming distance
-      ;(astar_manhat *puzzle*) ; Admissable Heuristic - manhattan distance
-      ;(astar_nilsson *puzzle*) ; Inadmissable Heuristic - Nilsson's sequence score
+      (astar_hamming *puzzle*) ; Admissable Heuristic - hamming distance
+      (astar_manhat *puzzle*) ; Admissable Heuristic - manhattan distance
+      (astar_nilsson *puzzle*) ; Inadmissable Heuristic - Nilsson's sequence score
 
     )
     ; error message and exits program
