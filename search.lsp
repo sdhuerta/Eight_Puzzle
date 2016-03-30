@@ -131,11 +131,12 @@ Modified by: Steven Huerta, Christian Sieh
     			   state of the slide puzzle
 
 |#
-(defun astar_hamming (start) (search_bfs_dfs start 'astar_hamming)
+(defun astar_hamming (start) 
 "
   (astar_hamming start): Returns true if valid puzzle entries. 
 
 "
+    (search_bfs_dfs start 'astar_hamming)
 )
 
 

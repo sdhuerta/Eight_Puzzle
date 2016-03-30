@@ -263,7 +263,7 @@
   This function is called directly from clisp. if no arguments are given, the user is propmted for the puzzle. Otherwise reads in each argument as an element in the puzzle.
   
 |#
-(defun 8puzzle (&rest puzzleInput)
+(defun 8puzzle (&optional puzzleInput)
   "
   (8puzzle &rest puzzleInput): Makes call to proper function based on input
   entered by the user. 
