@@ -1,3 +1,20 @@
+#| 
+  p_child.lsp
+
+  This file contains the functions to generate
+  successors and to evaluate nodes to produce a 
+  score for use in the A* graph search. The functions
+  included are:
+  
+  	puzzle_children - generate successor states
+
+  	hamming - calculate the Hamming distance score
+  	manhattan - calculate the manhattan distance score
+  	nilsson - calculate the Nilsson sequence score
+
+|#
+
+
 #|
 	Function: puzzle_children
 

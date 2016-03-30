@@ -8,7 +8,7 @@
   the search functions are called to solve the puzzle.
 
   Class: CSC 447 - Artificial Intelligence
-  Authors: 
+  Authors: Allison Bodvig, Christian Sieh, Steven Huerta
   Due Date: March 27, 2016
 
 |#

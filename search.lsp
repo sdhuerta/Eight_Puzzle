@@ -2,9 +2,13 @@
                     ***** SEARCH.LSP *****
 
 General-purpose exhaustive search routine includes both breadth-first
-search and depth-first search. Uses graph search with OPEN and CLOSED
-lists rather than tree search, to avoid cycles. Does not use heuristics
-to limit or guide search.
+search, iterated depth first search, and three A* search methods using
+different heuristics for evaluation. Uses graph search with OPEN and CLOSED
+lists rather than tree search, to avoid cycles, with the exception of 
+the IDFS search, which will not eliminate nodes that have been evaluated
+before.   
+
+BFS and IDFS not use heuristics to limit or guide search.
 
 To solve a specific problem, the functions "generate-successors" and
 "goal-state" must be defined. "Generate-successors" takes a state as its
@@ -19,7 +23,7 @@ backwards through the parent states.
 Author: John M. Weiss, Ph.D.
 Written Spring 2016 for CSC447/547 AI class.
 
-Modifications:
+Modified by: Steven Huerta, Christian Sieh
 
 |#
 
@@ -42,26 +46,23 @@ Modifications:
 ; Test if two nodes have the same state.
 
 #|
-	Function: search_bfs_dfs
+	Function: equal-states
 
 	Author: Dr. John Weiss
-
-	Modified: Steven Huerta
     
     Description: Test if two nodes have the same state.
 
-    Param: start - a list of n^2 elements representing the intial
-    			   state of the slide puzzle
-    		type - a string value that represents the type of search
+    Param: n1 - first node
+    	   n2 - second node
 
 |#
 (defun equal-states (n1 n2)
 "
   (equal-states n1 n2): test if lists are the same
 
-  n1 - first list to compare
+  n1 - first node to compare
 
-  n2 - second list to compare
+  n2 - second node to compare
 
 " 
     (equal (node-state n1) (node-state n2))
@@ -69,24 +70,17 @@ Modifications:
 
 ;--------------------------------------------------------------------------
 
-; Breadth-first-search implements the OPEN list as a QUEUE of (state parent) nodes.
+
 #|
-	Function: search_bfs_dfs
+	Function: bfs
 
 	Author: Dr. John Weiss
-
-	Modified: Steven Huerta
     
-    Description: This function is a catch all for the three
-    types of search functions: BFS, IDFS, and A*. This function
-    calls the other functions to generate children and search the 
-    graph generated to find a goal state. After finding a goal state,
-    the function will call a print function to display results on the
-    screen
+    Description: Breadth-first-search implements
+    			 the OPEN list as a QUEUE of (state parent) nodes.
 
     Param: start - a list of n^2 elements representing the intial
     			   state of the slide puzzle
-    		type - a string value that represents the type of search
 
 |#
 (defun bfs (start) (search_bfs_dfs start 'bfs)
@@ -101,22 +95,20 @@ Modifications:
 
 ; Depth-first-search implements the OPEN list as a STACK of (state parent) nodes.
 #|
-	Function: search_bfs_dfs
+	Function: idfs
 
 	Author: Dr. John Weiss
 
 	Modified: Steven Huerta
     
-    Description: This function is a catch all for the three
-    types of search functions: BFS, IDFS, and A*. This function
-    calls the other functions to generate children and search the 
-    graph generated to find a goal state. After finding a goal state,
-    the function will call a print function to display results on the
-    screen
+    Description: Iterated depth-first-search 
+    implements the OPEN list as a STACK of (state parent) nodes. 
+    the idfs string will trigger iterative depth exploration
+    of the graph. This implementation DOES NOT eliminate 
+    duplicate puzzle states. 
 
     Param: start - a list of n^2 elements representing the intial
     			   state of the slide puzzle
-    		type - a string value that represents the type of search
 
 |#
 (defun idfs (start) (search_bfs_dfs start 'idfs)
@@ -126,24 +118,15 @@ Modifications:
 "
 )
 
-; A* using hamming score to determine best node in list
 #|
-	Function: search_bfs_dfs
+	Function: astar_hamming
 
-	Author: Dr. John Weiss
-
-	Modified: Steven Huerta
+	Author: Steven Huerta
     
-    Description: This function is a catch all for the three
-    types of search functions: BFS, IDFS, and A*. This function
-    calls the other functions to generate children and search the 
-    graph generated to find a goal state. After finding a goal state,
-    the function will call a print function to display results on the
-    screen
+    Description: A* using hamming score to determine best node in list
 
     Param: start - a list of n^2 elements representing the intial
     			   state of the slide puzzle
-    		type - a string value that represents the type of search
 
 |#
 (defun astar_hamming (start) (search_bfs_dfs start 'astar_hamming)
@@ -154,24 +137,15 @@ Modifications:
 )
 
 
-; A* using manhattan score to determine best node in list
 #|
-	Function: search_bfs_dfs
+	Function: astar_manhat
 
-	Author: Dr. John Weiss
+	Author: Steven Huerta
 
-	Modified: Steven Huerta
-    
-    Description: This function is a catch all for the three
-    types of search functions: BFS, IDFS, and A*. This function
-    calls the other functions to generate children and search the 
-    graph generated to find a goal state. After finding a goal state,
-    the function will call a print function to display results on the
-    screen
+	Description: A* using manhattan score to determine best node in list
 
     Param: start - a list of n^2 elements representing the intial
     			   state of the slide puzzle
-    		type - a string value that represents the type of search
 
 |#
 (defun astar_manhat (start) (search_bfs_dfs start 'astar_manhat)
@@ -184,22 +158,14 @@ Modifications:
 
 ; A* using nilsson score to determine best node in list
 #|
-	Function: search_bfs_dfs
+	Function: astar_nilsson
 
-	Author: Dr. John Weiss
-
-	Modified: Steven Huerta
-    
-    Description: This function is a catch all for the three
-    types of search functions: BFS, IDFS, and A*. This function
-    calls the other functions to generate children and search the 
-    graph generated to find a goal state. After finding a goal state,
-    the function will call a print function to display results on the
-    screen
+	Author: Steven Huerta
+  
+    Description: A* using nilsson score to determine best node in list
 
     Param: start - a list of n^2 elements representing the intial
     			   state of the slide puzzle
-    		type - a string value that represents the type of search
 
 |#
 (defun astar_nilsson (start) (search_bfs_dfs start 'astar_nilsson)
@@ -215,7 +181,7 @@ Modifications:
 
 	Author: Dr. John Weiss
 
-	Modified: Steven Huerta
+	Modified: Steven Huerta, Christian Sieh
     
     Description: This function is a catch all for the three
     types of search functions: BFS, IDFS, and A*. This function
@@ -361,32 +327,37 @@ Modifications:
     )
 )
 
-;--------------------------------------------------------------------------
 
-; Build-solution takes a state and a list of (state parent) pairs
-; and constructs the list of states that led to the current state
-; by tracing back through the parents to the start node (nil parent).
 
 #|
-	Function: search_bfs_dfs
+	Function: build-solution
 
 	Author: Dr. John Weiss
 
-	Modified: Steven Huerta
+	Modified: Steven Huerta, Christian Sieh
     
-    Description: This function is a catch all for the three
-    types of search functions: BFS, IDFS, and A*. This function
-    calls the other functions to generate children and search the 
-    graph generated to find a goal state. After finding a goal state,
-    the function will call a print function to display results on the
-    screen
+    Description: Build-solution takes a state and a list of 
+    (state parent) pairs and constructs the list of states 
+    that led to the current state by tracing back through
+    the parents to the start node (nil parent).
 
-    Param: start - a list of n^2 elements representing the intial
-    			   state of the slide puzzle
-    		type - a string value that represents the type of search
-
+    Param:  node - final goal node
+  	 		node-list - nodes from CLOSED list from graph search
+  	 		genNodes - value of total nodes generated
+  	 		disNodes - value of distinct nodes generated
+  	 		exNodes - value of nodes expaned
 |#
 (defun build-solution (node node-list type genNodes disNodes exNodes)
+"
+  (build-solution node node-list type genNodes disNodes exNodes):
+  	 Returns true if valid puzzle entries.
+
+  	 node: final goal node
+  	 node-list: nodes from CLOSED list from graph search
+  	 genNodes: value of total nodes generated
+  	 disNodes: value of distinct nodes generated
+  	 exNodes: value of nodes expaned
+"
     (let 
     	(
     		(finalPath)
@@ -409,29 +380,36 @@ Modifications:
 
 )
 
-; Member-state looks for a node on the node-list with the same state.
 #|
-	Function: search_bfs_dfs
+	Function: member-state
 
 	Author: Dr. John Weiss
 
-	Modified: Steven Huerta
+	Modified: Steven Huerta, Christian Sieh
     
-    Description: This function is a catch all for the three
-    types of search functions: BFS, IDFS, and A*. This function
-    calls the other functions to generate children and search the 
-    graph generated to find a goal state. After finding a goal state,
-    the function will call a print function to display results on the
-    screen
+    Description: Member-state looks for a node on the
+    node-list with the same state.
 
-    Param: start - a list of n^2 elements representing the intial
-    			   state of the slide puzzle
-    		type - a string value that represents the type of search
+    Param: 	state: puzzle state being searched for
+		  	depth: depth of node to search for
+		  	node-list: list of nodes to search
 
 |#
 (defun member-state (state depth node-list)
+"
+  (member-state state depth node-list):
+  	Member-state looks for a node on the
+    node-list with the same state.
+
+  	 state: puzzle state being searched for
+  	 depth: depth of node to search for
+  	 node-list: list of nodes to search
+"	
     (dolist (node node-list)
-        (when (and (equal state (node-state node)) (equal depth (node-depth node))) (return node))
+    	; find where the state and depth match the 
+    	; parameters given
+        (when (and (equal state (node-state node)) 
+        	(equal depth (node-depth node))) (return node))
     )
 )
 
@@ -468,22 +446,15 @@ Modifications:
 )
 
 #|
-	Function: search_bfs_dfs
+	Function: goal-state?
 
 	Author: Dr. John Weiss
-
-	Modified: Steven Huerta
     
-    Description: This function is a catch all for the three
-    types of search functions: BFS, IDFS, and A*. This function
-    calls the other functions to generate children and search the 
-    graph generated to find a goal state. After finding a goal state,
-    the function will call a print function to display results on the
-    screen
+    Description: Compare state to the goal state and 
+    return true if they match. 
 
-    Param: start - a list of n^2 elements representing the intial
+    Param: state - a list of n^2 elements representing the intial
     			   state of the slide puzzle
-    		type - a string value that represents the type of search
 
 |#
 (defun goal-state? (state)
