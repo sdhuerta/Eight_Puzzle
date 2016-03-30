@@ -83,13 +83,14 @@ Modified by: Steven Huerta, Christian Sieh
     			   state of the slide puzzle
 
 |#
-(defun bfs (start) (search_bfs_dfs start 'bfs)
+(defun bfs (start) 
 "
   (bfs start): Search the graph using BFS
 
   start - list of elements representing initial state of the puzzle 
 
 "
+    (search_bfs_dfs start 'bfs)
 )
 
 
@@ -111,11 +112,12 @@ Modified by: Steven Huerta, Christian Sieh
     			   state of the slide puzzle
 
 |#
-(defun idfs (start) (search_bfs_dfs start 'idfs)
+(defun idfs (start) 
 "
   (idfs start): Returns true if valid puzzle entries. 
 
 "
+    (search_bfs_dfs start 'idfs)
 )
 
 #|
@@ -129,11 +131,12 @@ Modified by: Steven Huerta, Christian Sieh
     			   state of the slide puzzle
 
 |#
-(defun astar_hamming (start) (search_bfs_dfs start 'astar_hamming)
+(defun astar_hamming (start) 
 "
   (astar_hamming start): Returns true if valid puzzle entries. 
 
 "
+    (search_bfs_dfs start 'astar_hamming)
 )
 
 
@@ -148,11 +151,13 @@ Modified by: Steven Huerta, Christian Sieh
     			   state of the slide puzzle
 
 |#
-(defun astar_manhat (start) (search_bfs_dfs start 'astar_manhat)
+(defun astar_manhat (start)
 "
   (astar_manhat start): Returns true if valid puzzle entries. 
 
 "
+     (search_bfs_dfs start 'astar_manhat)
+
 )
 
 
@@ -168,11 +173,12 @@ Modified by: Steven Huerta, Christian Sieh
     			   state of the slide puzzle
 
 |#
-(defun astar_nilsson (start) (search_bfs_dfs start 'astar_nilsson)
+(defun astar_nilsson (start)
 "
   (astar_nilsson start): Returns true if valid puzzle entries. 
 
 "
+    (search_bfs_dfs start 'astar_nilsson)
 )
 
 
