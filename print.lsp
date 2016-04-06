@@ -40,8 +40,14 @@
  | been printed it moves on to the next row.
  |#
 (defun printPuzzle (type puzzleStates genNodes disNodes exNodes)  
-  (let* ((puzzleSize (sqrt(length(car puzzleStates)))) (rowStates (rowState puzzleStates puzzleSize)) (j 0) 
-        (moveCount (- (length puzzleStates) 1)) (midpoint (floor(/ puzzleSize 2))))
+  (let* (
+          (puzzleSize (sqrt(length(car puzzleStates)))) 
+          (rowStates (rowState puzzleStates puzzleSize)) 
+          (j 0) 
+          (moveCount (- (length puzzleStates) 1)) 
+          (midpoint (floor(/ puzzleSize 2)))
+          (space (log ( length (car puzzleStates)) 10))
+        )
 
     ;Header information
     (cond
@@ -72,8 +78,9 @@
 	       ((= k (+ j puzzleSize)))
               ;If the value is 0 ouput a space otherwise output the digit
               (if (eq 0 (nth k state))
-                (format t "  ")
-                (format t "~d " (nth k state))
+                (dotimes (i (+ space 1))
+                  (format t " "))
+                (format t "~vd " space (nth k state))
               )
 	  )
 
